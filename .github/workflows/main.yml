@@ -1,0 +1,117 @@
+name: Build Multi-Platform Go Libraries
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [386, amd64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.23.4'
+
+      - name: Build Windows DLL
+        run: |
+          set GOARCH=${{ matrix.arch }}
+          go build -o libs_dist/requests-go-${{ matrix.arch }}.dll -buildmode=c-shared libs_dist/export.go
+        working-directory: libs_dist/
+
+      - name: Upload Windows DLL artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-${{ matrix.arch }}-dll
+          path: libs_dist/requests-go-${{ matrix.arch }}.dll
+
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.23.4'
+
+      - name: Build Linux SO
+        run: |
+          GOARCH=${{ matrix.arch }} go build -o libs_dist/requests-go-${{ matrix.arch }}.so -buildmode=c-shared libs_dist/export.go
+        working-directory: libs_dist/
+
+      - name: Upload Linux SO artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-${{ matrix.arch }}-so
+          path: libs_dist/requests-go-${{ matrix.arch }}.so
+
+  # Note: For macOS ARM64, you would typically need a self-hosted runner.
+  # GitHub Actions does not currently provide ARM64 macOS runners.
+  build-macos-intel:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.23.4'
+
+      - name: Build macOS DYLIB for Intel
+        run: |
+          GOARCH=amd64 go build -o libs_dist/requests-go-intel.dylib -buildmode=c-shared libs_dist/export.go
+        working-directory: libs_dist/
+
+      - name: Upload macOS DYLIB artifact for Intel
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-intel-dylib
+          path: libs_dist/requests-go-intel.dylib
+# Note: The following job is hypothetical and would require a self-hosted runner.
+  build-macos-arm64:
+    runs-on: [self-hosted, macos-arm64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.23.4'
+
+      - name: Build macOS DYLIB for ARM64
+        run: |
+          GOARCH=arm64 go build -o libs_dist/requests-go-arm64.dylib -buildmode=c-shared libs_dist/export.go
+        working-directory: libs_dist/
+
+      - name: Upload macOS DYLIB artifact for ARM64
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-arm64-dylib
+          path: libs_dist/requests-go-arm64.dylib
