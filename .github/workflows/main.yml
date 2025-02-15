@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@latest
+        uses: actions/setup-go@v4
         with:
           go-version: '1.23.4'
 
@@ -29,7 +29,7 @@ jobs:
         working-directory: libs_dist/
 
       - name: Upload Windows DLL artifact
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v4
         with:
           name: windows-${{ matrix.arch }}-dll
           path: libs_dist/requests-go-${{ matrix.arch }}.dll
@@ -42,18 +42,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@latest
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@latest
+        uses: docker/setup-buildx-action@v3
 
       - name: Set up Go
-        uses: actions/setup-go@latest
+        uses: actions/setup-go@v4
         with:
           go-version: '1.23.4'
 
@@ -63,7 +63,7 @@ jobs:
         working-directory: libs_dist/
 
       - name: Upload Linux SO artifact
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.arch }}-so
           path: libs_dist/requests-go-${{ matrix.arch }}.so
@@ -75,10 +75,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@latest
+        uses: actions/setup-go@v4
         with:
           go-version: '1.23.4'
 
@@ -88,7 +88,7 @@ jobs:
         working-directory: libs_dist/
 
       - name: Upload macOS DYLIB artifact for Intel
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v4
         with:
           name: macos-intel-dylib
           path: libs_dist/requests-go-intel.dylib
@@ -98,10 +98,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@latest
+        uses: actions/setup-go@v4
         with:
           go-version: '1.23.4'
 
@@ -111,7 +111,7 @@ jobs:
         working-directory: libs_dist/
 
       - name: Upload macOS DYLIB artifact for ARM64
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v4
         with:
           name: macos-arm64-dylib
           path: libs_dist/requests-go-arm64.dylib
