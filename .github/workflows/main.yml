@@ -25,7 +25,7 @@ jobs:
       - name: Build Windows DLL
         run: |
           set GOARCH=${{ matrix.arch }}
-          go build -o ./libs_dist/requests-go-${{ matrix.arch }}.dll -buildmode=c-shared ./libs_dist/export.go
+          go build -o ./requests-go-${{ matrix.arch }}.dll -buildmode=c-shared ./export.go
         working-directory: libs_dist/
 
       - name: Upload Windows DLL artifact
@@ -59,7 +59,7 @@ jobs:
 
       - name: Build Linux SO
         run: |
-          GOARCH=${{ matrix.arch }} go build -o ./libs_dist/requests-go-${{ matrix.arch }}.so -buildmode=c-shared ./libs_dist/export.go
+          GOARCH=${{ matrix.arch }} go build -o ./requests-go-${{ matrix.arch }}.so -buildmode=c-shared ./export.go
         working-directory: libs_dist/
 
       - name: Upload Linux SO artifact
@@ -84,7 +84,7 @@ jobs:
 
       - name: Build macOS DYLIB for Intel
         run: |
-          GOARCH=amd64 go build -o ./libs_dist/requests-go-intel.dylib -buildmode=c-shared ./libs_dist/export.go
+          GOARCH=amd64 go build -o ./requests-go-intel.dylib -buildmode=c-shared ./export.go
         working-directory: libs_dist/
 
       - name: Upload macOS DYLIB artifact for Intel
@@ -107,7 +107,7 @@ jobs:
 
       - name: Build macOS DYLIB for ARM64
         run: |
-          GOARCH=arm64 go build -o ./libs_dist/requests-go-arm64.dylib -buildmode=c-shared ./libs_dist/export.go
+          GOARCH=arm64 go build -o ./requests-go-arm64.dylib -buildmode=c-shared ./export.go
         working-directory: libs_dist/
 
       - name: Upload macOS DYLIB artifact for ARM64
